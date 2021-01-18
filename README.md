@@ -16,7 +16,7 @@ Crearemos tres máquinas virtuales
 
 ### Arquitectura de red ideal
 
-![Arquitectura ideal] (/imgs/arquitectura.png)
+![Arquitectura ideal] (imgs/arquitectura.png)
 
 **Código Front**
 ~~~
