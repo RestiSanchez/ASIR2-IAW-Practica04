@@ -24,10 +24,10 @@ apt install php libapache2-mod-php php-mysql -y
 
 # Declaración las variables 
 HTTPPASSWD_USER=resti
-HTTPASSWD_PASSWD=root
+HTTPPASSWD_PASSWD=root
 HTTPPASSWD_DIR=/home/ubuntu
 #IP privada del back-end
-IP_PRIVADA_MYSQL=172.31.0.216
+IP_MYSQL=3.239.216.179
 
 #########
 #Adminer#
@@ -50,29 +50,32 @@ mv adminer-4.7.7-mysql.php index.php
 
 
 #Instalamos la utilidad unzip para descomprimir el codigo fuente
+
 apt install unzip -y
 
 #Descargamos el código fuente de phpMyAdmin del repositorio oficial
+
 cd /home/ubuntu
 
-# Por si hay que repetir script
-# rm -rf phpMyAdmin-5.0.4-all-languages.zip
-wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.zip
-
-#Descomprimimos el archivo .zip
-unzip phpMyAdmin-5.0.4-all-languages.zip -y
-
-#Borramos el archivo .zip ya que lo tenemos ya descomprimido
 rm -rf phpMyAdmin-5.0.4-all-languages.zip
 
-#Movemos el directorio de phpMyAdmin al directorio /var/www/html
+wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.zip
+
+# Descomprimimos el archivo
+unzip phpMyAdmin-5.0.4-all-languages.zip
+
+# Borramos el .zip
+rm -rf phpMyAdmin-5.0.4-all-languages.zip
+
+# Movemos el directorio de phpMyadmin
 mv phpMyAdmin-5.0.4-all-languages/ /var/www/html/phpmyadmin
 
-#Configuramos el archivo config.inc.php de phpMyAdmin
+#Configuramos el archivo config.inc.php
 cd /var/www/html/phpmyadmin
+
 mv config.sample.inc.php config.inc.php
-sed -i "s/localhost/$IP_PRIVADA_MYSQL/" /var/www/html/phpmyadmin/config.inc.php
-sed -i "s/localhost/$IP_PRIVADA_MYSQL/" /var/www/html/phpmyadmin/config.php
+
+sed -i "s/localhost/$IP_MYSQL/" /var/www/html/phpmyadmin/config.inc.php
 
 ##########
 #GoAccess#
@@ -87,10 +90,11 @@ apt-get install goaccess -y
 
 mkdir -p /var/www/html/stats
 goaccess /var/log/apache2/access.log -o /var/www/html/stats/index.html --log-format=COMBINED --real-time-html &
-htpasswd -bc $HTTPPASSWD_DIR/.htpasswd $HTTPPASSWD_USER $HTTPASSWD_PASSWD
+htpasswd -bc $HTTPPASSWD_DIR/.htpasswd $HTTPPASSWD_USER $HTTPPASSWD_PASSWD
+
 
 # Copiamos el archivo de configuración de Apache
-cp /home/ubuntu/000-default.conf /etc/apache2/sites-available/
+cp /home/ubuntu/ASIR2-IAW-Practica03/000-default.conf /etc/apache2/sites-available/
 
 # Reiniciamos el servicio
 systemctl restart apache2
@@ -105,6 +109,8 @@ rm -rf iaw-practica-lamp
 git clone https://github.com/josejuansanchez/iaw-practica-lamp
 mv /var/www/html/iaw-practica-lamp/src/* /var/www/html/
 
+# Configuramos la IP del config.php
+sed -i "s/localhost/$IP_MYSQL/" /var/www/html/config.php
 
 # Eliminamos contenido que no sea útil
 rm -rf /var/www/html/index.html
@@ -119,4 +125,3 @@ systemctl restart apache2
 # Cambiamos a la ruta original
 
 cd /home/ubuntu
-
